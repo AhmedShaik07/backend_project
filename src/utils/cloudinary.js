@@ -11,7 +11,7 @@ import fs from "fs";
     });
 });
 
-const uploadCluodinary = async (localFilePath) => {
+const uploadOnCluodinary = async (localFilePath) => {
     try {
         if(!localFilePath) return null;
 
@@ -30,3 +30,5 @@ const uploadCluodinary = async (localFilePath) => {
         
     }
 }
+
+export {uploadOnCluodinary}
