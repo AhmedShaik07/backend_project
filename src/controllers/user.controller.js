@@ -1,7 +1,7 @@
 import {asyncHandler} from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js";
 import { User }  from "../models/user.model.js";
-import { uploadOnCluodinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 const generateAccessAndRefreshTokens = async(userId) => {
@@ -33,19 +33,18 @@ const registerUser = asyncHandler( async (req, res) => {
     */     
 
     // step -1
-    const {fullName, email, password, userName} = req.body
-    console.log("email: ", email);
-
+    const {fullname, email, password, username} = req.body
+   
     // step -2
     if(
-        [userName, fullName, email, password].some((field) => field?.trim() === "")
+        [username, fullname, email, password].some((field) => field?.trim() === "")
     ){
         throw new ApiError(400, "All fields are required.!")
     }
 
     //step -3
     const existedUser = await User.findOne({
-        $or: [{ userName }, { email }]
+        $or: [{ username }, { email }]
     });
 
     if(existedUser){
@@ -54,6 +53,7 @@ const registerUser = asyncHandler( async (req, res) => {
 
     //step -4(checking for avatar)
     const avatarLocalPath = req.files?.avatar[0]?.path;
+    
     //const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
     let coverImageLocalPath;
@@ -66,8 +66,8 @@ const registerUser = asyncHandler( async (req, res) => {
     }
 
     //step -5
-    const avatar = await uploadOnCluodinary(avatarLocalPath);
-    const coverImage = await uploadOnCluodinary(coverImageLocalPath);
+    const avatar = await uploadOnCloudinary(avatarLocalPath);
+    const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
     if(!avatar){
         throw new ApiError(400, "Avatar is required.!")
@@ -75,9 +75,9 @@ const registerUser = asyncHandler( async (req, res) => {
 
     //step -6
     const user = await User.create({
-        userName: userName.toLowerCase(),
+        username: username.toLowerCase(),
         email,
-        fullName,
+        fullname,
         password,
         avatar: avatar.url,
         coverImage: coverImage?.url || ""
@@ -110,14 +110,14 @@ const userLogin = asyncHandler( async (req,res) => {
     // send cookie
     */
    
-    const {userName, email, password} = req.body
+    const {username, email, password} = req.body
 
-    if(!userName || !email){
+    if(!username && !email){
         throw new ApiError(400, "username or email is required.!")
     }
 
     const user = await User.findOne({
-        $or: [{userName}, {email}]
+        $or: [{username}, {email}]
     })
 
     if(!user){
