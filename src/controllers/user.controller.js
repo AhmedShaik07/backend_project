@@ -241,13 +241,13 @@ const changeCurrentPassword = asyncHandler( async (req, res) => {
 
     return res
     .status(200)
-    .json(200, {}, "Password changed succesfully.!")
+    .json(new ApiResponse(200, {}, "Password changed succesfully.!"))
 })
 
 const getCurrentUser = asyncHandler( async (req, res) =>{
     return res
     .status(200)
-    .json(200, req.user, "Current user fetched")
+    .json(new ApiResponse(200, req.user, "Current user fetched"))
 })
 
 const updateAccountDetails = asyncHandler( async (req, res) => {
@@ -257,7 +257,7 @@ const updateAccountDetails = asyncHandler( async (req, res) => {
         throw new ApiError(401, "Fullname or email is required.!")
     }
 
-    const user = User.findByIdAndUpdate(req.user?._id,
+    const user = await User.findByIdAndUpdate(req.user?._id,
         {
             $set: {fullname, email: email}
         },
@@ -265,7 +265,7 @@ const updateAccountDetails = asyncHandler( async (req, res) => {
     ).select("-password")
 
     return res.status(200)
-    .json(200, user, "Account details updated.!")
+    .json(new ApiResponse(200, user, "Account details updated.!"))
 })
 
 const updateUserAvatar = asyncHandler( async (req, res) => {
@@ -295,7 +295,7 @@ const updateUserAvatar = asyncHandler( async (req, res) => {
 
     return res
     .status(200)
-    .json(200, user, "Avatar updated successfully.!")
+    .json(new ApiResponse(200, user, "Avatar updated successfully.!"))
 })
 
 const updateCoverImage = asyncHandler( async (req, res) => {
@@ -325,7 +325,7 @@ const updateCoverImage = asyncHandler( async (req, res) => {
 
     return res
     .status(200)
-    .json(200, user, "Cover Image updated successfully.!")
+    .json(new ApiResponse(200, user, "Cover Image updated successfully.!"))
 })
 
 
